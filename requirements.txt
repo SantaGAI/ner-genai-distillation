@@ -1,7 +1,4 @@
-# Core
-python>=3.10
-
-# PyTorch (CUDA handled by installation command)
+# Core ML
 torch>=2.1.0
 torchvision>=0.16.0
 torchaudio>=2.1.0
