@@ -1,15 +1,11 @@
 import json
-import random
 from pathlib import Path
-
 
 INPUT_FILE = "/Users/santanu/Projects/ner-genai-distillation/data/source/eng.train"
 OUTPUT_GOLD = "/Users/santanu/Projects/ner-genai-distillation/data/gold/gold.json"
 OUTPUT_RAW = "/Users/santanu/Projects/ner-genai-distillation/data/raw/raw.json"
 
-NUM_GOLD = 200
-NUM_RAW = 1200
-RANDOM_SEED = 42
+NUM_SAMPLES = 1000
 
 
 def parse_conll_file(filepath):
@@ -42,7 +38,6 @@ def parse_conll_file(filepath):
 
             parts = line.split()
             if len(parts) < 4:
-                # Malformed line, skip safely
                 continue
 
             token = parts[0]
@@ -51,7 +46,6 @@ def parse_conll_file(filepath):
             tokens.append(token)
             ner_tags.append(ner)
 
-    # Catch last sentence if file doesn't end with newline
     if tokens:
         sentences.append({
             "tokens": tokens,
@@ -62,36 +56,29 @@ def parse_conll_file(filepath):
 
 
 def main():
-    random.seed(RANDOM_SEED)
-
     sentences = parse_conll_file(INPUT_FILE)
 
-    if len(sentences) < NUM_GOLD + NUM_RAW:
+    if len(sentences) < NUM_SAMPLES:
         raise ValueError(
             f"Not enough sentences in dataset: found {len(sentences)}"
         )
 
-    random.shuffle(sentences)
+    selected = sentences[:NUM_SAMPLES]
 
-    gold_sentences = sentences[:NUM_GOLD]
-    raw_sentences = sentences[NUM_GOLD:NUM_GOLD + NUM_RAW]
+    gold_data = []
+    raw_data = []
 
-    gold_data = [
-        {
-            "id": f"gold_{i:04d}",
+    for i, s in enumerate(selected):
+        gold_data.append({
+            "id": f"sample_{i:04d}",
             "tokens": s["tokens"],
             "ner_tags": s["ner_tags"]
-        }
-        for i, s in enumerate(gold_sentences)
-    ]
+        })
 
-    raw_data = [
-        {
-            "id": f"raw_{i:04d}",
+        raw_data.append({
+            "id": f"sample_{i:04d}",
             "tokens": s["tokens"]
-        }
-        for i, s in enumerate(raw_sentences)
-    ]
+        })
 
     Path(OUTPUT_GOLD).parent.mkdir(parents=True, exist_ok=True)
     Path(OUTPUT_RAW).parent.mkdir(parents=True, exist_ok=True)
