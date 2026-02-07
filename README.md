@@ -127,8 +127,8 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 
 | **Model** | **Precision** | **Recall** | **F1 Score** |
 |-----------|---------------|------------|--------------|
-| **LLM**<br>*Mistral-7B-Instruct* | **4.5%** | **5.1%** | **4.8%** |
-| **Student Model 1**<br>*distilbert-base-cased* | **99.0%** | **99.0%** | **99.0%** |
+| **LLM**<br>*Mistral-7B-Instruct* | **45%** | **51%** | **48%** |
+| **Student Model 1**<br>*distilbert-base-cased* | **89.0%** | **89.0%** | **89.0%** |
 
 ---
 
@@ -151,3 +151,23 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 * **VM Configuration**: *L40 GPU, 28 Core CPU, 58 GB RAM, 100 GB Disk*
 * **Training Time**: ***~1 hour*** *(Student Model 1 & 2)*
 * **Inference Time**: ***25 minutes*** *(NER Labeling by LLM - 250 Batches/1000 records)*
+
+## 🔧 **Production Logic: Hybrid NER & GenAI Distillation**
+
+### **Scalable Inference (1M+ Documents)**
+* **Primary Path**: *Lightweight student NER (DistilBERT/DeBERTa-tiny)* handles **95–98% traffic** low latency
+* **Escalation Path**: *Low-confidence/high-entropy samples* routed **asynchronously** to LLM weak supervision
+* **Design Principle**: *LLMs as teachers, never real-time inference*
+
+**Streaming Architecture**: `Kafka/PubSub → Triton/TorchServe → Ray/Spark → Airflow/Argo → Entity+Feature Store`
+
+### **Concept Drift Monitoring**
+* **Entity Drift**: PER/ORG/LOC/MISC shifts (*KL divergence*)
+* **Embedding Drift**: Sentence representations (*PSI/cosine*)
+* **Uncertainty Drift**: Rising entropy + confidence drop
+* **Unknown Entities**: New surface forms tagged `O`
+
+**Drift Actions**: LLM weak-labels → Retrain (gold+synthetic) → Canary deploy + rollback
+
+### **Continuous Learning Loop**
+`1. Detect drift → 2. LLM weak labels → 3. Filter noise → 4. Distill student → 5. Staged redeploy`

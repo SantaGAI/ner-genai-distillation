@@ -1,17 +1,34 @@
 import json
 from pathlib import Path
 
-INPUT_FILE = "/Users/santanu/Projects/ner-genai-distillation/data/source/eng.train"
-OUTPUT_GOLD = "/Users/santanu/Projects/ner-genai-distillation/data/gold/gold.json"
-OUTPUT_RAW = "/Users/santanu/Projects/ner-genai-distillation/data/raw/raw.json"
+# ---------------- CONFIG ----------------
+# Path to the original CoNLL-2003 training file
+INPUT_FILE = "/ner-genai-distillation/data/source/eng.train"
 
+# Output paths:
+# 1) Gold data → tokens + ground-truth NER tags
+# 2) Raw data  → tokens only (used for LLM labeling / augmentation)
+OUTPUT_GOLD = "/ner-genai-distillation/data/gold/gold.json"
+OUTPUT_RAW = "/ner-genai-distillation/data/raw/raw.json"
+
+# Number of sentences to extract from the dataset
 NUM_SAMPLES = 1000
 
 
 def parse_conll_file(filepath):
     """
-    Parses a CoNLL-2003 formatted file into a list of sentences.
-    Each sentence is a dict with tokens and ner_tags.
+    Parse a CoNLL-2003 formatted file into sentence-level samples.
+
+    Each sentence is returned as:
+    {
+        "tokens": [...],
+        "ner_tags": [...]
+    }
+
+    Notes:
+    - Sentence boundaries are empty lines
+    - Document markers (-DOCSTART-) are ignored
+    - Only token and NER tag columns are used
     """
     sentences = []
     tokens = []
@@ -21,7 +38,7 @@ def parse_conll_file(filepath):
         for line in f:
             line = line.strip()
 
-            # Sentence boundary
+            # Empty line indicates end of a sentence
             if not line:
                 if tokens:
                     sentences.append({
@@ -32,12 +49,13 @@ def parse_conll_file(filepath):
                     ner_tags = []
                 continue
 
-            # Ignore document markers
+            # Skip document boundary markers
             if line.startswith("-DOCSTART-"):
                 continue
 
             parts = line.split()
             if len(parts) < 4:
+                # Skip malformed lines
                 continue
 
             token = parts[0]
@@ -46,6 +64,7 @@ def parse_conll_file(filepath):
             tokens.append(token)
             ner_tags.append(ner)
 
+    # Handle final sentence if file does not end with a blank line
     if tokens:
         sentences.append({
             "tokens": tokens,
@@ -56,36 +75,45 @@ def parse_conll_file(filepath):
 
 
 def main():
+    # Parse CoNLL-2003 file into sentence-level structures
     sentences = parse_conll_file(INPUT_FILE)
 
+    # Ensure dataset contains enough samples
     if len(sentences) < NUM_SAMPLES:
         raise ValueError(
             f"Not enough sentences in dataset: found {len(sentences)}"
         )
 
+    # Select a fixed subset for reproducibility
     selected = sentences[:NUM_SAMPLES]
 
     gold_data = []
     raw_data = []
 
+    # Create aligned gold and raw datasets
     for i, s in enumerate(selected):
+        # Gold data retains ground-truth NER tags
         gold_data.append({
             "id": f"sample_{i:04d}",
             "tokens": s["tokens"],
             "ner_tags": s["ner_tags"]
         })
 
+        # Raw data removes labels (used for LLM-based annotation)
         raw_data.append({
             "id": f"sample_{i:04d}",
             "tokens": s["tokens"]
         })
 
+    # Ensure output directories exist
     Path(OUTPUT_GOLD).parent.mkdir(parents=True, exist_ok=True)
     Path(OUTPUT_RAW).parent.mkdir(parents=True, exist_ok=True)
 
+    # Save gold dataset
     with open(OUTPUT_GOLD, "w", encoding="utf-8") as f:
         json.dump(gold_data, f, indent=2)
 
+    # Save raw (unlabeled) dataset
     with open(OUTPUT_RAW, "w", encoding="utf-8") as f:
         json.dump(raw_data, f, indent=2)
 
