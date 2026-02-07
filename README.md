@@ -145,11 +145,9 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 
 ---
 
-## ⚙️ **Training & Inference Environment**
+## **Training & Inference**
 
-| **Category** | **Details** |
-|--------------|-------------|
-| **Cloud Platform** | **HyperStack VM** |
-| **VM Configuration** | **L40 GPU**<br>*28 Core CPU, 58 GB RAM, 100 GB Disk* |
-| **Training Time** | **~1 hour**<br>*Student Models 1 & 2* |
-| **Inference Time** | **25 minutes**<br>*LLM NER (250 batches/1K records)* |
+* **Cloud Environment**: *HyperStack VM*
+* **VM Configuration**: *L40 GPU, 28 Core CPU, 58 GB RAM, 100 GB Disk*
+* **Training Time**: ***~1 hour*** *(Student Model 1 & 2)*
+* **Inference Time**: ***25 minutes*** *(NER Labeling by LLM - 250 Batches/1000 records)*
