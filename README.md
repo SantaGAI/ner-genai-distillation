@@ -152,7 +152,9 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 * **Training Time**: ***~1 hour*** *(Student Model 1 & 2)*
 * **Inference Time**: ***25 minutes*** *(NER Labeling by LLM - 250 Batches/1000 records)*
 
-## 🔧 **Production Logic: Hybrid NER & GenAI Distillation**
+---
+
+## **Production Logic: Hybrid NER & GenAI Distillation**
 
 ### **Scalable Inference (1M+ Documents)**
 * **Primary Path**: *Lightweight student NER (DistilBERT/DeBERTa-tiny)* handles **95–98% traffic** low latency
