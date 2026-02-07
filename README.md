@@ -105,6 +105,7 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 
 ---
 
+## Comparison Metrics
 
 ### Synthetic Data Generation Metrics
 
@@ -120,3 +121,15 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 |                          | Avg Confidence             | 94%   |
 |                          | P90 Confidence             | 100%  |
 
+
+
+### SOTA Results Summary
+
+| **Phase** | **Best Epoch F1** | **Final F1** | **Val Loss** | **Improvement** |
+|-----------|-------------------|--------------|--------------|-----------------|
+| **Phase 1**<br>*Teacher Distillation* | **77.3%** (E3) | **77.3%** | **3.5** | **Baseline** |
+| **Phase 2**<br>*Contrastive Distillation* | **81.8%** (E7) | **80.8%** | **1.12** | **+4.5%** |
+| **Phase 3 Cycle 1**<br>*Self-Training* | **92.1%** (E5) | **92.1%** | **0.27** | **+14.8%** |
+| **Phase 3 Cycle 2**<br>*Self-Training* | **93.3%** (E5) | **93.3%** | **0.23** | **+16.0%** |
+| **Phase 3 Cycle 3**<br>*Self-Training* | **94.0%** (E5) | **94.0%** | **0.2** | **+16.7%** |
+| **🏆 FINAL BEST** | | **94.0%** | **0.2** | **+16.7%** |
