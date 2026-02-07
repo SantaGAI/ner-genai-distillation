@@ -1,6 +1,6 @@
 # Hybrid NER & GenAI Distillation
 
-## Dataset
+## **Dataset**
 
 **CoNLL-2003** is a widely used benchmark dataset for Named Entity Recognition (NER) built from Reuters news articles. It provides token-level *IOB annotations* for four entity types:
 
@@ -9,11 +9,11 @@
 * **LOC** – Location
 * **MISC** – Miscellaneous
 
-The dataset includes predefined train, validation, and test splits, making it a standard choice for training, evaluation, and fair comparison of NER models.
+The dataset includes predefined train, validation, and test splits, making it a standard choice for training, evaluation, and fair comparison of NER models. However, considering the task completion timeline and compute resources availability, only first 1,000 sentences and 12,057 tokens are taken for the experiments from eng.train data. Gold and Raw data created subsequently with and without true labels. 
 
 ---
 
-## Methodology
+## **Methodology**
 
 ### **Synthetic Data Generation (CoNLL-2003 → LLM)**
 
@@ -142,3 +142,14 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 | **Phase 3 Cycle 2**<br>*Self-Training* | **93.3%** (E5) | **93.3%** | **0.23** | **+16.0%** |
 | **Phase 3 Cycle 3**<br>*Self-Training* | **94.0%** (E5) | **94.0%** | **0.2** | **+16.7%** |
 | **FINAL BEST** | | **94.0%** | **0.2** | **+16.7%** |
+
+---
+
+## ⚙️ **Training & Inference Environment**
+
+| **Category** | **Details** |
+|--------------|-------------|
+| **Cloud Platform** | **HyperStack VM** |
+| **VM Configuration** | **L40 GPU**<br>*28 Core CPU, 58 GB RAM, 100 GB Disk* |
+| **Training Time** | **~1 hour**<br>*Student Models 1 & 2* |
+| **Inference Time** | **25 minutes**<br>*LLM NER (250 batches/1K records)* |
