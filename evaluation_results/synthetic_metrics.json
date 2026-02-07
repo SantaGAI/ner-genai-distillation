@@ -1,0 +1,15 @@
+{
+  "generation": {
+    "unit": "seconds_per_batch",
+    "mean": 4.184257976007997,
+    "p95": 4.650665311950116,
+    "batches": 250
+  },
+  "data_quality": {
+    "total_samples": 1000,
+    "avg_entities_per_sample": 1.786,
+    "entity_density": 0.1481297171767438,
+    "avg_sample_conf": 0.9448387769730271,
+    "p90_confidence": 1.0
+  }
+}

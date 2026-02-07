@@ -1,0 +1,196 @@
+{
+  "experiment": "NER_Distillation_Pipeline",
+  "dataset": "CoNLL-2003",
+  "phases": {
+    "phase1_teacher_guided_distillation": {
+      "description": "Hard-label + soft-label (KL) distillation from teacher",
+      "train_data": {
+        "gold_samples": 200,
+        "synthetic_samples": 600
+      },
+      "validation_data": {
+        "gold_samples": 800
+      },
+      "epochs": [
+        {
+          "epoch": 1,
+          "train_loss": 21.416831,
+          "val_loss": 15.895921,
+          "precision": 0.768654,
+          "recall": 0.768654,
+          "f1": 0.768654
+        },
+        {
+          "epoch": 2,
+          "train_loss": 7.006445,
+          "val_loss": 5.891928,
+          "precision": 0.770605,
+          "recall": 0.770605,
+          "f1": 0.770605
+        },
+        {
+          "epoch": 3,
+          "train_loss": 3.728169,
+          "val_loss": 4.004377,
+          "precision": 0.772965,
+          "recall": 0.772965,
+          "f1": 0.772965
+        },
+        {
+          "epoch": 4,
+          "train_loss": 2.885647,
+          "val_loss": 3.564932,
+          "precision": 0.771836,
+          "recall": 0.771836,
+          "f1": 0.771836
+        },
+        {
+          "epoch": 5,
+          "train_loss": 2.630737,
+          "val_loss": 3.503739,
+          "precision": 0.771220,
+          "recall": 0.771220,
+          "f1": 0.771220
+        }
+      ],
+      "best_f1": 0.773
+    },
+
+    "phase2_contrastive_representation_distillation": {
+      "description": "CERND-based feature alignment with teacher representations",
+      "epochs": [
+        {
+          "epoch": 1,
+          "train_loss": null,
+          "val_loss": 1.748234,
+          "precision": 0.768654,
+          "recall": 0.768654,
+          "f1": 0.768654
+        },
+        {
+          "epoch": 2,
+          "train_loss": null,
+          "val_loss": 1.462339,
+          "precision": 0.790824,
+          "recall": 0.790824,
+          "f1": 0.790824
+        },
+        {
+          "epoch": 3,
+          "train_loss": null,
+          "val_loss": 1.355485,
+          "precision": 0.789900,
+          "recall": 0.789900,
+          "f1": 0.789900
+        },
+        {
+          "epoch": 4,
+          "train_loss": null,
+          "val_loss": 1.221667,
+          "precision": 0.816586,
+          "recall": 0.816586,
+          "f1": 0.816586
+        },
+        {
+          "epoch": 5,
+          "train_loss": null,
+          "val_loss": 1.217251,
+          "precision": 0.805809,
+          "recall": 0.805809,
+          "f1": 0.805809
+        },
+        {
+          "epoch": 6,
+          "train_loss": null,
+          "val_loss": 1.129634,
+          "precision": 0.809812,
+          "recall": 0.809812,
+          "f1": 0.809812
+        },
+        {
+          "epoch": 7,
+          "train_loss": null,
+          "val_loss": 1.117703,
+          "precision": 0.817715,
+          "recall": 0.817715,
+          "f1": 0.817715
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.162960,
+          "val_loss": 1.120352,
+          "precision": 0.808991,
+          "recall": 0.808991,
+          "f1": 0.808991
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.162960,
+          "val_loss": 1.123678,
+          "precision": 0.807349,
+          "recall": 0.807349,
+          "f1": 0.807349
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.162960,
+          "val_loss": 1.121610,
+          "precision": 0.808170,
+          "recall": 0.808170,
+          "f1": 0.808170
+        }
+      ],
+      "best_f1": 0.818
+    },
+
+    "phase3_iterative_self_training": {
+      "description": "Student self-training with confidence & entropy filtering",
+      "cycles": [
+        {
+          "cycle": 1,
+          "pseudo_samples_generated": 0,
+          "mix_ratio_gold_to_pseudo": "1:4",
+          "epochs": [
+            { "epoch": 1, "val_loss": 0.472663, "f1": 0.861131 },
+            { "epoch": 2, "val_loss": 0.338823, "f1": 0.900236 },
+            { "epoch": 3, "val_loss": 0.287647, "f1": 0.918095 },
+            { "epoch": 4, "val_loss": 0.275913, "f1": 0.920764 },
+            { "epoch": 5, "val_loss": 0.274730, "f1": 0.921482 }
+          ],
+          "best_f1": 0.921
+        },
+        {
+          "cycle": 2,
+          "pseudo_samples_generated": 0,
+          "mix_ratio_gold_to_pseudo": "1:4",
+          "epochs": [
+            { "epoch": 1, "val_loss": 0.266531, "f1": 0.922611 },
+            { "epoch": 2, "val_loss": 0.257338, "f1": 0.926717 },
+            { "epoch": 3, "val_loss": 0.235387, "f1": 0.931643 },
+            { "epoch": 4, "val_loss": 0.230359, "f1": 0.933080 },
+            { "epoch": 5, "val_loss": 0.229935, "f1": 0.933285 }
+          ],
+          "best_f1": 0.933
+        },
+        {
+          "cycle": 3,
+          "pseudo_samples_generated": 0,
+          "mix_ratio_gold_to_pseudo": "1:4",
+          "epochs": [
+            { "epoch": 1, "val_loss": 0.225229, "f1": 0.932875 },
+            { "epoch": 2, "val_loss": 0.226960, "f1": 0.934928 },
+            { "epoch": 3, "val_loss": 0.207993, "f1": 0.936672 },
+            { "epoch": 4, "val_loss": 0.204791, "f1": 0.939341 },
+            { "epoch": 5, "val_loss": 0.204751, "f1": 0.939649 }
+          ],
+          "best_f1": 0.940
+        }
+      ]
+    }
+  },
+
+  "final_result": {
+    "best_f1": 0.940,
+    "best_model_path": "models/distillation/phase3_cycle2"
+  }
+}
