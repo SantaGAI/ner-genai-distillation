@@ -122,8 +122,15 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 |                          | P90 Confidence             | 100%  |
 
 
+### Student Model 1: Supervised + LLM Baseline
 
-### SOTA Results Summary
+| **Model** | **Precision** | **Recall** | **F1 Score** |
+|-----------|---------------|------------|--------------|
+| **LLM (Mistral-7B)** | **4.5%** | **5.1%** | **4.8%** |
+| **Student Model 1**<br>*distilbert-base-cased* | **99.0%** | **99.0%** | **99.0%** |
+
+
+### Student Model 2: Multi-Phase Knowledge Distillation
 
 | **Phase** | **Best Epoch F1** | **Final F1** | **Val Loss** | **Improvement** |
 |-----------|-------------------|--------------|--------------|-----------------|
@@ -132,4 +139,5 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 | **Phase 3 Cycle 1**<br>*Self-Training* | **92.1%** (E5) | **92.1%** | **0.27** | **+14.8%** |
 | **Phase 3 Cycle 2**<br>*Self-Training* | **93.3%** (E5) | **93.3%** | **0.23** | **+16.0%** |
 | **Phase 3 Cycle 3**<br>*Self-Training* | **94.0%** (E5) | **94.0%** | **0.2** | **+16.7%** |
-| **🏆 FINAL BEST** | | **94.0%** | **0.2** | **+16.7%** |
+| **FINAL BEST** | | **94.0%** | **0.2** | **+16.7%** |
+
