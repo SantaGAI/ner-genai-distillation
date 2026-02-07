@@ -156,6 +156,13 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 
 ## **Production Logic: Hybrid NER & GenAI Distillation**
 
+### **Current Codebase limitations**
+* **No End-to-End Orchestration or Modularity**: Pipeline stages run independently with tight coupling and no unified workflow, limiting reproducibility and automation.
+
+* **Non-Scalable, Monolithic Execution**: Batch-only, siloed execution with no microservices, streaming, or autoscaling support for large-scale document processing.
+
+* **Missing MLOps & Monitoring Controls**: No drift detection, data quality checks, model versioning, or lifecycle governance required for production systems.
+
 ### **Scalable Inference (1M+ Documents)**
 * **Primary Path**: *Lightweight student NER (DistilBERT/DeBERTa-tiny)* handles **95–98% traffic** low latency
 * **Escalation Path**: *Low-confidence/high-entropy samples* routed **asynchronously** to LLM weak supervision
