@@ -1,11 +1,26 @@
-METHODOLOGY
+Below is a clean, industry-standard README.md version of your content.
+It is structured for fast scanning, clear motivation, and easy reviewer understanding in VSCode / GitHub.
+
+⸻
+
+# Methodology
 
 CoNLL-2003 Dataset
-A widely used benchmark for Named Entity Recognition (NER) built from Reuters news articles. It provides token-level IOB annotations for four entity types (PER, ORG, LOC, MISC) and includes predefined train, validation, and test splits, making it ideal for training, evaluating, and comparing NER models under standardized settings.
+
+CoNLL-2003 is a widely used benchmark dataset for Named Entity Recognition (NER) built from Reuters news articles.
+It provides token-level IOB annotations for four entity types:
+	•	PER – Person
+	•	ORG – Organization
+	•	LOC – Location
+	•	MISC – Miscellaneous
+
+The dataset includes predefined train, validation, and test splits, making it a standard choice for training, evaluation, and fair comparison of NER models.
+
+⸻
 
 Synthetic Data Generation (CoNLL-2003 → LLM)
 
-Generated synthetic NER annotations from the CoNLL-2003 dataset using a large instruction-tuned language model to support downstream distillation and robustness training.
+Synthetic NER annotations are generated from the CoNLL-2003 dataset using a large instruction-tuned language model to support downstream data augmentation and knowledge distillation.
 
 Method
 	•	Input: Pre-tokenized CoNLL-2003 sentences
@@ -13,84 +28,88 @@ Method
 	•	Task: Strict CoNLL-2003 NER tagging (PER / ORG / LOC / MISC)
 
 Key Design Choices
-	•	Token-preserving prompts ensure exact alignment between input tokens and output IOB tags.
-	•	Constraint-driven prompting enforces valid CoNLL-style IOB rules and prevents free-form output.
-	•	Deterministic inference (greedy decoding) guarantees reproducibility.
-	•	Strict parsing & padding ensure one tag per token, defaulting to O when uncertain.
+	•	Token-preserving prompts ensure exact alignment between input tokens and output IOB tags
+	•	Constraint-driven prompting enforces valid CoNLL IOB rules and prevents free-form outputs
+	•	Deterministic inference (greedy decoding) guarantees reproducibility
+	•	Strict parsing & padding ensure exactly one tag per token, defaulting to O when uncertain
 
 Usage
 
-The resulting synthetic dataset is treated as noisy supervision and is used only for data augmentation and knowledge distillation, while gold labels remain the primary training anchor.
+The resulting synthetic dataset is treated as noisy supervision and is used only for data augmentation and knowledge distillation.
+Gold labels remain the primary training anchor.
 
 ⸻
 
-Student Model 1: Supervised + Weakly-Augmented NER (Baseline Distillation)
+Student Model 1: Supervised + Weakly-Augmented NER (Baseline)
 
-Model(s):
+Model
 	•	Student: distilbert-base-cased
 
-Methodology:
-Student Model 1 follows a classical NER fine-tuning approach where a lightweight transformer is trained using:
-	•	Gold CoNLL-2003 labels as the primary supervision
-	•	LLM-generated synthetic labels as additional noisy training data
+Methodology
 
-Training is performed with standard cross-entropy loss on token-level IOB tags, treating gold and synthetic samples equally (or with simple filtering).
+Student Model 1 follows a classical NER fine-tuning pipeline, where the student model is trained using:
+	•	Gold CoNLL-2003 labels as primary supervision
+	•	LLM-generated synthetic labels as additional noisy data
 
-Why this was tried:
+Training uses standard token-level cross-entropy loss, treating gold and synthetic samples equally (or with minimal filtering).
+
+Why This Was Tried
 	•	Establishes a strong baseline for comparison
-	•	Tests whether LLM-generated labels alone can boost performance via data augmentation
-	•	Simple, reproducible, and widely used in industry NER pipelines
+	•	Tests whether LLM-generated labels alone improve performance
+	•	Simple, reproducible, and commonly used in industry NER pipelines
 
-Limitation:
+Limitation
 	•	Assumes LLM labels are correct
-	•	No explicit mechanism to handle label noise, teacher uncertainty, or representation mismatch
+	•	No explicit handling of label noise, teacher uncertainty, or representation mismatch
 
 ⸻
 
 Student Model 2: Multi-Phase Knowledge Distillation with Teacher Guidance
 
-Model(s):
-	•	Teacher (Phase 0): dbmdz/bert-large-cased-finetuned-conll03-english (frozen, external)
+Models
+	•	Teacher (Phase 0): dbmdz/bert-large-cased-finetuned-conll03-english (frozen)
 	•	Student: distilbert-base-cased
 
-Methodology:
-Student Model 2 implements a research-grade distillation pipeline inspired by recent SOTA NER and KD literature:
+Methodology
+
+Student Model 2 implements a research-grade, multi-phase distillation pipeline inspired by recent SOTA NER and KD literature.
 
 Phase 0 – Teacher Signal Generation
-	•	Teacher generates token-level labels + confidence/logits
-	•	Produces weak but informative supervision, not just hard labels
+	•	Teacher produces token-level labels and confidence/logits
+	•	Generates soft, informative supervision, not just hard labels
 
 Phase 1 – Teacher-Guided Distillation
-	•	Student trained with dual loss:
+	•	Student trained with a dual loss:
 	•	Cross-Entropy on gold labels
-	•	KL-divergence between teacher and student logits (temperature τ=4)
-	•	Allows student to learn soft decision boundaries
+	•	KL-Divergence between teacher and student logits
+	•	Temperature: τ = 4
+	•	Enables learning of soft decision boundaries
 
 Phase 2 – Contrastive Representation Distillation (CERND)
-	•	Aligns hidden representations of student and teacher
-	•	Uses contrastive (InfoNCE) loss to transfer semantic structure, not just labels
+	•	Aligns hidden representations of teacher and student
+	•	Uses contrastive (InfoNCE) loss
+	•	Transfers semantic structure, not just labels
 
 Phase 3 – Iterative Self-Training
 	•	Student generates pseudo-labels on unlabeled data
-	•	Filters by high confidence + low entropy
+	•	Filters by high confidence and low entropy
 	•	Gradually increases reliance on student predictions over multiple cycles
 
-Why this was tried:
-	•	Explicitly addresses LLM label noise
+Why This Was Tried
+	•	Explicitly addresses label noise and uncertainty
 	•	Transfers both knowledge and representations
-	•	Mimics industry-grade distillation pipelines used for production NLP models
-	•	Aims for robust generalization, not just benchmark accuracy
-
-Summary Comparison (One-liner)
-	•	Student Model 1 tests whether LLM labels help at all (baseline).
-	•	Student Model 2 tests how far distillation can go when uncertainty, representations, and self-training are explicitly modeled.
-
-This makes Model 1 a control experiment, and Model 2 the research-driven, production-oriented solution.
+	•	Reflects industry-grade distillation pipelines used in production NLP
+	•	Targets robust generalization, not just benchmark accuracy
 
 ⸻
 
-COMPARISON METRICS
+Summary Comparison
+	•	Student Model 1 → Tests whether LLM labels help at all (baseline)
+	•	Student Model 2 → Tests how far distillation can go when uncertainty, representations, and self-training are explicitly modeled
 
+Model 1 acts as the control experiment, while Model 2 represents the research-driven, production-oriented solution.
+
+⸻
 
 ### Synthetic Data Generation Metrics
 
