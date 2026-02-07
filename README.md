@@ -105,32 +105,34 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 
 ---
 
-## Comparison Metrics
+## **Comparison Metrics**
 
-### Synthetic Data Generation Metrics
+### **Synthetic Data Generation Metrics**
 
-| Category                 | Metric                     | Value |
-|--------------------------|----------------------------|-------|
-| **Generation Performance** | Unit                       | seconds_per_batch |
-|                          | Mean Time (Inference)      | 4.1 s |
-|                          | P95 Time                   | 4.6 s |
-|                          | Total Batches              | 250   |
-| **Data Quality**         | Total Samples              | 1000  |
-|                          | Avg Entities / Sample      | 1.8   |
-|                          | Entity Density             | 14%   |
-|                          | Avg Confidence             | 94%   |
-|                          | P90 Confidence             | 100%  |
+| **Category** | **Metric** | **Value** |
+|--------------|------------|-----------|
+| **Generation Performance** | Unit | `seconds_per_batch` |
+| | **Mean Time** | **4.1s** |
+| | P95 Time | **4.6s** |
+| | **Total Batches** | **250** |
+| **Data Quality** | **Total Samples** | **1,000** |
+| | Avg Entities/Sample | **1.8** |
+| | **Entity Density** | **14%** |
+| | **Avg Confidence** | **94%** |
+| | P90 Confidence | **100%** |
 
+---
 
-### Student Model 1: Supervised + LLM Baseline
+### **Student Model 1: Supervised + LLM Baseline**
 
 | **Model** | **Precision** | **Recall** | **F1 Score** |
 |-----------|---------------|------------|--------------|
-| **LLM (Mistral-7B)** | **4.5%** | **5.1%** | **4.8%** |
+| **LLM**<br>*Mistral-7B-Instruct* | **4.5%** | **5.1%** | **4.8%** |
 | **Student Model 1**<br>*distilbert-base-cased* | **99.0%** | **99.0%** | **99.0%** |
 
+---
 
-### Student Model 2: Multi-Phase Knowledge Distillation
+### **Student Model 2: Multi-Phase Knowledge Distillation**
 
 | **Phase** | **Best Epoch F1** | **Final F1** | **Val Loss** | **Improvement** |
 |-----------|-------------------|--------------|--------------|-----------------|
@@ -140,4 +142,3 @@ Student Model 2 implements a *research-grade, multi-phase distillation pipeline*
 | **Phase 3 Cycle 2**<br>*Self-Training* | **93.3%** (E5) | **93.3%** | **0.23** | **+16.0%** |
 | **Phase 3 Cycle 3**<br>*Self-Training* | **94.0%** (E5) | **94.0%** | **0.2** | **+16.7%** |
 | **FINAL BEST** | | **94.0%** | **0.2** | **+16.7%** |
-
