@@ -1,11 +1,8 @@
 # Hybrid NER & GenAI Distillation
 
-## Methodology
+## Dataset
 
-### **CoNLL-2003 Dataset**
-
-**CoNLL-2003** is a widely used benchmark dataset for Named Entity Recognition (NER) built from Reuters news articles.  
-It provides token-level *IOB annotations* for four entity types:
+**CoNLL-2003** is a widely used benchmark dataset for Named Entity Recognition (NER) built from Reuters news articles. It provides token-level *IOB annotations* for four entity types:
 
 * **PER** – Person
 * **ORG** – Organization  
@@ -15,6 +12,8 @@ It provides token-level *IOB annotations* for four entity types:
 The dataset includes predefined train, validation, and test splits, making it a standard choice for training, evaluation, and fair comparison of NER models.
 
 ---
+
+## Methodology
 
 ### **Synthetic Data Generation (CoNLL-2003 → LLM)**
 
