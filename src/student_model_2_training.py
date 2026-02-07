@@ -490,7 +490,7 @@ def run_phase3(phase2_model_path: str):
 
 # ---------------- MAIN PIPELINE ----------------
 def main():
-    print("SOTA NER DISTILLATION PIPELINE")
+    print("NER DISTILLATION PIPELINE")
     print("=" * 50)
     
     # Phase 1: Teacher-guided distillation
